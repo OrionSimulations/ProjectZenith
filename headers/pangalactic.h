@@ -10,7 +10,7 @@ private:
 public:
   GalaxyCenter(double thisRadius);
   GalaxyCenter();
-  ~GalaxyCenter(){};
+  ~GalaxyCenter(){}
 };
 
 GalaxyCenter::GalaxyCenter(double thisRadius)
@@ -29,7 +29,7 @@ private:
   int numStars;
 public:
   StarCluster(int starCount);
-  ~StarCluster(){};
+  ~StarCluster(){}
 };
 
 class SpiralArm
@@ -39,7 +39,7 @@ private:
   std::vector<StarCluster> LocalClusters;
 public:
   SpiralArm(double length, double width);
-  ~SpiralArm(){};
+  ~SpiralArm(){}
 };
 
 class Galaxy
@@ -50,7 +50,7 @@ private:
   std::vector<SpiralArm> Arms;
 public:
   Galaxy(double currentAge, GalaxyCenter thisCore, std::vector<SpiralArm> armList);
-  ~Galaxy(){};
+  ~Galaxy(){}
 };
 
 Galaxy::Galaxy(double currentAge, GalaxyCenter thisCore, std::vector<SpiralArm> armList)

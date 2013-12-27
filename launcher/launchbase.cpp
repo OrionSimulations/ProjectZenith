@@ -1,5 +1,6 @@
 #include "launchbase.h"
 
-launchBase::launchBase()
+launchBase::launchBase(QWidget *parent) : QWidget(parent)
 {
+
 }

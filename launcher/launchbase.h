@@ -4,7 +4,9 @@
 class launchBase
 {
 public:
-    launchBase();
+    launchBase(QWidget *parent = 0);
+    ~launchBase(){}
+
 };
 
 #endif // LAUNCHBASE_H

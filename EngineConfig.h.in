@@ -1,9 +1,10 @@
 #ifndef CONFIG_H_IN
 #define CONFIG_H_IN
 
-#cmakedefine Engine_Major_Version @Engine_Major_Version@
-#cmakedefine Engine_Minor_Version @Engine_Minor_Version@
-#cmakedefine Engine_Build @Engine_Build@
-#cmakedefine Engine_Version "@Engine_Version@"
+#define Engine_Major_Version @Engine_Major_Version@
+#define Engine_Minor_Version @Engine_Minor_Version@
+#define Engine_Build @Engine_Build@
+#define Engine_Version "@Engine_Version@"
+#define DevRelease "@DevRelease@"
 
 #endif

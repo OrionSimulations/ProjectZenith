@@ -11,18 +11,16 @@ private:
     Terran=1,
     Oceanic,
     Desert,
-    Tundra
+    Tundra,
+    Barren
   };
   int type;
+  std::string name;
 public:
-  Terrestrial(int thisType);
-  ~Terrestrial(){};
+  Terrestrial(int thisType) : type(thisType){}
+  ~Terrestrial(){}
+  std::string getName(){return name;}
 };
-
-Terrestrial::Terrestrial(int thisType)
-{
-  type = thisType;
-}
 
 class Asteroid
 {
@@ -34,14 +32,10 @@ private:
   };
   int type;
 public:
-  Asteroid(int thisType);
-  ~Asteroid(){};
+  Asteroid(int thisType) : type(thisType){}
+  ~Asteroid(){}
 };
 
-Asteroid::Asteroid(int thisType)
-{
-  type = thisType;
-}
 
 class AstBelt
 {
@@ -49,15 +43,10 @@ private:
   int numAsteroids;
   std::vector<Asteroid> AstList;
 public:
-  AstBelt(int AstCount);
-  ~AstBelt(){};
+  AstBelt(int AstCount) : numAsteroids(AstCount){}
+  ~AstBelt(){}
   void addAsteroid(Asteroid newAst);
 };
-
-AstBelt::AstBelt(int AstCount)
-{
-  numAsteroids = AstCount;
-}
 
 void AstBelt::addAsteroid(Asteroid newAst)
 {
@@ -76,23 +65,18 @@ private:
   };
   int type;
 public:
-  Jovian(int thisType);
-  ~Jovian(){};
+  Jovian(int thisType) : type(thisType){}
+  ~Jovian(){}
 };
-
-Jovian::Jovian(int thisType)
-{
-  type = thisType;
-}
 
 class OrbitalCenter
 {
 private:
   std::vector<int> Location;
 public:
-  OrbitalCenter(std::vector<int> Vector3);
-  ~OrbitalCenter(){};
-  void setCenter(std::vector<int> Center){Location = Center;};
+  OrbitalCenter(std::vector<int> Vector3) : Location(Vector3){}
+  ~OrbitalCenter(){}
+  void setCenter(std::vector<int> Center){Location = Center;}
 };
 
 class Star
@@ -103,7 +87,7 @@ private:
   int type;
   bool isSingular;
   int setType(int temp);
-  void setCompanions(std::vector<Star> Companions);
+  void setCompanions(std::vector<Star> Companions){CompanionStars = Companions;}
   std::string name;
   std::vector<Star> CompanionStars;
   std::vector<Terrestrial> Planetoids;
@@ -111,34 +95,15 @@ private:
   std::vector<AstBelt> AsteroidBelts;
   std::vector<Asteroid> RogueAsteroids;
 public:
-  Star(std::string newName, int startTemp, std::vector<Star> Companions);
-  Star(std::string newName, int startTemp);
-  ~Star(){};
-  void addCelestial(Terrestrial Planetoid){Planetoids.push_back(Planetoid);};
-  void addCelestial(Jovian LargePlanetoid){Jovians.push_back(LargePlanetoid);};
-  void addCelestial(AstBelt Belt){AsteroidBelts.push_back(Belt);};
-  void addCelestial(Asteroid thisAsteroid){RogueAsteroids.push_back(thisAsteroid);};
+  Star(std::string newName, int startTemp, std::vector<Star> Companions) : name(newName),temp(startTemp),type(setType(startTemp)),CompanionStars(Companions){}
+  Star(std::string newName, int startTemp) : name(newName),temp(startTemp),type(setType(startTemp)){}
+  ~Star(){}
+  std::string getStarName(){return name;}
+  void addCelestial(Terrestrial Planetoid){Planetoids.push_back(Planetoid);}
+  void addCelestial(Jovian LargePlanetoid){Jovians.push_back(LargePlanetoid);}
+  void addCelestial(AstBelt Belt){AsteroidBelts.push_back(Belt);}
+  void addCelestial(Asteroid thisAsteroid){RogueAsteroids.push_back(thisAsteroid);}
 };
-
-Star::Star(std::string newName, int startTemp, std::vector<Star> Companions)
-{
-  name = newName;
-  temp = startTemp;
-  type = setType(startTemp);
-  if(Companions.size() > 0) setCompanions(Companions);
-}
-
-Star::Star(std::string newName, int startTemp)
-{
-  name = newName;
-  temp = startTemp;
-  type = setType(startTemp);
-}
-
-void Star::setCompanions(std::vector<Star> Companions)
-{
-  CompanionStars = Companions;
-}
 
 int Star::setType(int temp)
 {
