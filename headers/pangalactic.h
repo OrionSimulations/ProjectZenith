@@ -6,68 +6,59 @@
 class GalaxyCenter
 {
 private:
-  double radius;
+    double radius;
 public:
-  GalaxyCenter(double thisRadius);
-  GalaxyCenter();
-  ~GalaxyCenter(){}
+    GalaxyCenter(double thisRadius) : radius(thisRadius){}
+    GalaxyCenter() : radius(1){}
+    ~GalaxyCenter(){}
 };
-
-GalaxyCenter::GalaxyCenter(double thisRadius)
-{
-  radius = thisRadius;
-}
-
-GalaxyCenter::GalaxyCenter()
-{
-  radius = 1;
-}
 
 class StarCluster
 {
 private:
-  int numStars;
+    int numStars;
 public:
-  StarCluster(int starCount);
-  ~StarCluster(){}
+    StarCluster(int starCount) : numStars(starCount){}
+    ~StarCluster(){}
 };
 
 class SpiralArm
 {
 private:
-  double length, width;
-  std::vector<StarCluster> LocalClusters;
+    double length, width;
+    std::vector<StarCluster> LocalClusters;
 public:
-  SpiralArm(double length, double width);
-  ~SpiralArm(){}
+    SpiralArm(double thisLength, double thisWidth, int numClusters) : length(thisLength),width(thisWidth){}
+    SpiralArm(std::vector<StarCluster> Clusters) : LocalClusters(Clusters){}
+    ~SpiralArm(){}
 };
 
 class Galaxy
 {
 private:
-  double age;
-  GalaxyCenter Core;
-  std::vector<SpiralArm> Arms;
+    enum Type{
+        Barred=1,
+        Spiral,
+        Elliptical,
+        Cluster,
+        Peculiar
+    };
+    int type;
+    double age;
+    GalaxyCenter Core;
+    std::vector<SpiralArm> Arms;
 public:
-  Galaxy(double currentAge, GalaxyCenter thisCore, std::vector<SpiralArm> armList);
-  ~Galaxy(){}
+    Galaxy(double currentAge, GalaxyCenter thisCore, std::vector<SpiralArm> armList) : age(currentAge),Core(thisCore),Arms(armList){}
+    ~Galaxy(){}
 };
-
-Galaxy::Galaxy(double currentAge, GalaxyCenter thisCore, std::vector<SpiralArm> armList)
-{
-  age = currentAge;
-  Core = thisCore;
-  Arms = armList;
-}
 
 class Sector
 {
 private:
-  int numGalaxies;
-  std::vector<Galaxy> Galaxies;
+    std::vector<Galaxy> Galaxies;
 public:
-  Sector(int galaxyCount, std::vector<Galaxy> galaxyList);
-  ~Sector();
+    Sector(std::vector<Galaxy> galaxyList) : Galaxies(galaxyList){}
+    ~Sector();
 };
 
 #endif

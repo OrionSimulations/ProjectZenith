@@ -1,12 +1,10 @@
 #ifndef LAUNCHBASE_H
 #define LAUNCHBASE_H
 
-class launchBase
+class launchBaseGL
 {
-public:
-    launchBase(QWidget *parent = 0);
-    ~launchBase(){}
-
+    launchBaseGL();
+    ~launchBaseGL(){}
 };
 
 #endif // LAUNCHBASE_H
