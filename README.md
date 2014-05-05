@@ -1,17 +1,37 @@
 Stella-Engine
 =============
 
-Orbital mechanic and interplanetary communication simulation engine. 
+Modular N-body physics simulation engine designed for computational efficiency under intensive situations. Engine functionality is directed towards eliminating the appearance of Newtonian Mechanics (Rail-Based Physics Simulations) for visible systems, while still allowing systems to operate within plausible limits of memory consumption and processing time.
 
 Development Cycle
 =================
-Stage-I development will be directed towards a rudimentary N-body simulation at the interplanetary scale.
 
-Stage-II Development will focus on stellar interactions at the galactic scale.
+#Stage-I Development
 
-Stage-III development will focus on implementation of an accurate N-body simulation.
+**CURRENT**
 
-Current Status
-==============
+Development focused on fundamental operation of the engine, including implementation of the module system framework. Primary objective of this stage is the implementation of the Abstraction Protocol for memory management.
 
-The engine is currently in Stage-I Development. The intent is to complete the initial framework for N-Body simulation before progressing towards larger cosmic interactions.
+#Stage-II Development
+
+Development focused on development of the N-body simulation. Primary objective of this stage is the implementation of fluid transitions between simulation stages.
+
+#Stage-III Development
+
+Development focused on refining the simulation framework and increasing modularity of the system.
+
+Objectives
+=========
+
+#In Progress
+
+- [] Small-System Container Hierarchy; system still requires refinement and extensive testing (65%)
+- [] Large-Scale Container Hierarchy; system still requires implementation (10%)
+- [] Basic OpenGL Framework (10%)
+
+#To be Started
+
+- Physics Engine
+- Rendering Hierarchy
+- Abstraction Protocol
+- Module Loading Framework

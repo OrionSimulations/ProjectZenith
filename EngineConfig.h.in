@@ -3,8 +3,13 @@
 
 #define Engine_Major_Version @Engine_Major_Version@
 #define Engine_Minor_Version @Engine_Minor_Version@
-#define Engine_Build @Engine_Build@
+#define Engine_Patch @Engine_Patch@
 #define Engine_Version "@Engine_Version@"
-#define DevRelease "@DevRelease@"
+
+void printVersion(){
+    std::string version = "Stella Engine: v. ";
+    version.append(Engine_Version);
+    std::cout << version << std::endl;
+}
 
 #endif
