@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 2.8.9)
 cmake_policy(SET CMP0020 NEW)
-if(WIN32)
-set(WIN_LIB_DIR "C:/ProjectLibs")
-link_directories(${WIN_LIB_DIR}/lib)
-endif(WIN32)
-set(GCC_COMP_FLAGS "-static-libgcc -static-libstdc++ -std=gnu++0x")
+
+set(GCC_COMP_FLAGS "-static-libgcc -static-libstdc++ -std=gnu++0x -fopenmp")
+if(WIN_BUILD)
+set(GCC_COMP_FLAGS "${GCC_COMP_FLAGS} -mwindows")
+endif(WIN_BUILD)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COMP_FLAGS}")
+set(PROJECT_BINARY_DIR ${PROJECT_SOURCE_DIR}/build)
 find_program(CMAKE_CXX_COMPILER g++)
 find_program(CMAKE_C_COMPILER gcc)
 
@@ -14,9 +15,16 @@ project(StellaEngine)
 #Versioning
 set(Engine_Major_Version 0)
 set(Engine_Minor_Version 0)
-set(Engine_Patch 015)
-set(DevRelease Y)                                                                                   #DevRelease? NOTE: After changing, rerun CMake to cache the change
-set(UseQT N)                                                                                        #UseQt Modules?
+set(Engine_Patch 040)																				#Handled by build script
+set(DevRelease ${DevRelease} CACHE BOOL "Set to Y if Development Build; N otherwise" FORCE)
+set(WIN_BUILD ${WIN_BUILD} CACHE BOOL "Set to Y if Development Build; N otherwise" FORCE)
+
+if(WIN_BUILD)
+set(WIN_BUILD true)
+else(WIN_BUILD)
+set(WIN_BUILD false)
+endif(WIN_BUILD)
+
 set(Engine_Version ${Engine_Major_Version}.${Engine_Minor_Version}.${Engine_Patch})
 if(DevRelease)
 set(Engine_Version "${Engine_Version} DEV")
@@ -26,45 +34,26 @@ endif(DevRelease)
 configure_file("${PROJECT_SOURCE_DIR}/EngineConfig.h.in" "${PROJECT_BINARY_DIR}/EngineConfig.h")
 include_directories("${PROJECT_BINARY_DIR}")
 
-#Include subdirs
-add_subdirectory(headers)
-add_subdirectory(processes)
-add_subdirectory(launcher)
-add_subdirectory(assets)
+#Create subdirs
+#add_subdirectory(assets)
+execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory modules)
+#install(CODE "file(make_directory \${ENV}\${CMAKE_INSTALL_PREFIX}\${modules})")
 
-#Include OpenGL Resources
-find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
-find_package(GLFW REQUIRED)
-set(GLLibs ${GLFW_LIBRARIES} ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
+#List Sources
+set(SOURCE_FILES main.cpp processes/ModuleFramework/modLoad.cpp processes/ObjectFramework/objFrame.cpp)
 
-#Include Qt Resources. Prefer standard OpenGL usage, but left as an option.
-if(UseQT)
-set(QtComp Core Widgets)                                                                            #Add to this list as requirements are updated
-    if(WIN32)
-    set(CMAKE_PREFIX_PATH C:/Qt/5.2.0/Src/qtbase/include)
-    set(CMAKE_INCLUDE_PATH C:/Qt/5.2.0/Src/qtbase/include)
-    else(WIN32)
-    set(CMAKE_PREFIX_PATH ~/QtSDK/QtSources/5.2.0/Src/qtbase/include)
-    set(CMAKE_INCLUDE_PATH ~/QtSDK/QtSources/5.2.0/Src/qtbase/include)
-    endif(WIN32)
-find_package(Qt5 REQUIRED COMPONENTS ${QtComp})
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_AUTOMOC ON)
-else(UseQT)
-endif(UseQT)
+#Add Debugging information (DevReleases)
+if(DevRelease)
+set(CMAKE_BUILD_TYPE "Debug")
+else(DevRelease)
+set(CMAKE_BUILD_TYPE "Release")
+endif(DevRelease)
 
 #Create Execs
 if(DevRelease)
-add_executable(StellaEngine-Experimental main.cpp)
+add_executable(StellaEngine-EX ${SOURCE_FILES})
+target_link_libraries(StellaEngine-EX ${CMAKE_DL_LIBS})
 else(DevRelease)
-add_executable(StellaEngine main.cpp)
+add_executable(StellaEngine ${SOURCE_FILES})
+target_link_libraries(StellaEngine ${CMAKE_DL_LIBS})
 endif(DevRelease)
-
-#Link Launcher Libraries
-add_executable(launcher/Launcher launcher/runLauncher.cpp)
-if(UseQT)
-qt5_use_modules(launcher/Launcher ${QtComp})
-else(UseQT)
-target_link_libraries(launcher/Launcher ${GLLibs})
-endif(UseQT)
