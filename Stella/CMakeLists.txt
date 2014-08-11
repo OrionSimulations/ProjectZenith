@@ -15,7 +15,7 @@ project(StellaEngine)
 #Versioning
 set(Engine_Major_Version 0)
 set(Engine_Minor_Version 0)
-set(Engine_Patch 040)																				#Handled by build script
+set(Engine_Patch 072)																				#Handled by build script
 set(DevRelease ${DevRelease} CACHE BOOL "Set to Y if Development Build; N otherwise" FORCE)
 set(WIN_BUILD ${WIN_BUILD} CACHE BOOL "Set to Y if Development Build; N otherwise" FORCE)
 
@@ -37,10 +37,9 @@ include_directories("${PROJECT_BINARY_DIR}")
 #Create subdirs
 #add_subdirectory(assets)
 execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory modules)
-#install(CODE "file(make_directory \${ENV}\${CMAKE_INSTALL_PREFIX}\${modules})")
 
 #List Sources
-set(SOURCE_FILES main.cpp processes/ModuleFramework/modLoad.cpp processes/ObjectFramework/objFrame.cpp)
+set(LIB_FILES ModuleFramework/modLoad.cpp AssetFramework/objFrame.cpp stella.cpp contentLoad.cpp)
 
 #Add Debugging information (DevReleases)
 if(DevRelease)
@@ -50,10 +49,9 @@ set(CMAKE_BUILD_TYPE "Release")
 endif(DevRelease)
 
 #Create Execs
-if(DevRelease)
-add_executable(StellaEngine-EX ${SOURCE_FILES})
-target_link_libraries(StellaEngine-EX ${CMAKE_DL_LIBS})
-else(DevRelease)
-add_executable(StellaEngine ${SOURCE_FILES})
-target_link_libraries(StellaEngine ${CMAKE_DL_LIBS})
-endif(DevRelease)
+add_library(Stella ${LIB_FILES})
+target_link_libraries(Stella ${CMAKE_DL_LIBS})
+
+install(TARGETS Stella ARCHIVE DESTINATION lib)
+install(FILES stella.h DESTINATION include/Stella)
+install(FILES FindStella.cmake DESTINATION /usr/share/cmake-2.8/Modules/)
