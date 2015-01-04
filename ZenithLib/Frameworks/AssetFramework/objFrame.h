@@ -10,28 +10,29 @@
 
 #include "../contentLoad.h"
 
-class AssetLibrary{
+struct AssetLibrary{
 	static int nextLibID;
 	int libID;
-	const char* libName;
+	const char* name;
 	long objInstances;
 	void* obj_lib;
 	typedef void (*func_t)();
 	func_t lib_init;
 
-public:
-	AssetLibrary(const char* newName, void* objLibrary, func_t init) : libName(newName), obj_lib(objLibrary), lib_init(init){(*lib_init)(); nextLibID++;}
+	AssetLibrary(const char* newName, void* objLibrary, std::list<func_t> funcList) : name(newName), obj_lib(objLibrary), lib_init(*(funcList.begin())){(*lib_init)(); nextLibID++;}
 	~AssetLibrary(){
-		std::cout << "Unloading Asset Library " << this->libName << "..." << std::endl;
-		//Magic goes here
-		
-		//
+		std::cout << "Unloading Asset Library " << this->name << "..." << std::endl;
+#if WIN_BUILD
+		FreeLibrary(this->obj_lib);
+#else
+		if(dlclose(this->obj_lib)) std::cout << dlerror() << std::endl;
+#endif
 		this->obj_lib = NULL;
 	}
 	void refCountUp(){objInstances++;}
 	void refCountDn(){objInstances--; if(objInstances<=0) delete this;}				//In theory, this SHOULD delete the library ref when all instances are deleted
 	long refCount(){return objInstances;}
-	const char* getName(){return libName;}
+	const char* getName(){return name;}
 };
 
 class Property{
@@ -75,15 +76,17 @@ class AssetFramework{
 public:
     AssetFramework(){
     	std::cout << "Creating Asset Framework..." << std::endl;
-    	//Magic goes here
-
-    	//
+    	const char* reqFunc[] = {(char*)"initialize",(char*)"genAsset",NULL};
+    	ContentLoader<AssetLibrary> assetLoader(buildEnv::AssetDir.c_str(),reqFunc,true);
+    	AssetLibList = assetLoader.exportContentList();
     }
     ~AssetFramework(){
     	std::cout << "Destroying Asset Framework..." << std::endl;
-    	//Magic goes here
-
-    	//
+    	for(AssetLibrary *ref : AssetLibList){
+    		std::cout << "-";
+    		delete ref;
+    	}
+    	
     }
 };
 

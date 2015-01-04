@@ -10,14 +10,14 @@ set(PROJECT_BINARY_DIR ${PROJECT_SOURCE_DIR}/build)
 find_program(CMAKE_CXX_COMPILER g++)
 find_program(CMAKE_C_COMPILER gcc)
 
-project(StellaEngine)
+project(Zenith)
 
 #Versioning
 set(Engine_Major_Version 0)
 set(Engine_Minor_Version 0)
-set(Engine_Patch 072)																				#Handled by build script
+set(Engine_Patch 088)																				#Handled by build script
 set(DevRelease ${DevRelease} CACHE BOOL "Set to Y if Development Build; N otherwise" FORCE)
-set(WIN_BUILD ${WIN_BUILD} CACHE BOOL "Set to Y if Development Build; N otherwise" FORCE)
+set(WIN_BUILD ${WIN_BUILD} CACHE BOOL "Set to Y if Windows Build; N otherwise" FORCE)
 
 if(WIN_BUILD)
 set(WIN_BUILD true)
@@ -39,7 +39,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory modules)
 
 #List Sources
-set(LIB_FILES ModuleFramework/modLoad.cpp AssetFramework/objFrame.cpp stella.cpp contentLoad.cpp)
+set(LIB_FILES Frameworks/ModuleFramework/modLoad.cpp Frameworks/AssetFramework/objFrame.cpp zenith.cpp)
 
 #Add Debugging information (DevReleases)
 if(DevRelease)
@@ -49,9 +49,13 @@ set(CMAKE_BUILD_TYPE "Release")
 endif(DevRelease)
 
 #Create Execs
-add_library(Stella ${LIB_FILES})
-target_link_libraries(Stella ${CMAKE_DL_LIBS})
+add_library(Zenith ${LIB_FILES})
+target_link_libraries(Zenith ${CMAKE_DL_LIBS})
 
-install(TARGETS Stella ARCHIVE DESTINATION lib)
-install(FILES stella.h DESTINATION include/Stella)
-install(FILES FindStella.cmake DESTINATION /usr/share/cmake-2.8/Modules/)
+#Installation configuration
+if(WIN_BUILD)
+else(WIN_BUILD)
+install(TARGETS Zenith ARCHIVE DESTINATION lib)
+install(FILES zenith.h DESTINATION include/Zenith)
+install(FILES FindZenith.cmake DESTINATION /usr/share/cmake-2.8/Modules/)
+endif(WIN_BUILD)

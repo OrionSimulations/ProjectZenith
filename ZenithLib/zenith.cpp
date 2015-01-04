@@ -1,10 +1,10 @@
-#include "stella.h"
+#include "zenith.h"
 #include "EngineConfig.h"
 #include "sysenv.h"
-#include "ModuleFramework/modLoad.h"
-#include "AssetFramework/objFrame.h"
-#include "AbstractionFramework/absFrame.h"
-#include "RenderingFramework/renFrame.h"
+#include "Frameworks/ModuleFramework/modLoad.h"
+#include "Frameworks/AssetFramework/objFrame.h"
+#include "Frameworks/AbstractionFramework/absFrame.h"
+#include "Frameworks/RenderingFramework/renFrame.h"
 
 std::string buildEnv::BuildDir;
 std::string buildEnv::ModDir;
@@ -15,20 +15,20 @@ const char* Section::Increase;
 const char* Section::Item;
 const char* Section::Decrease;
 
-class StellaFramework{
+class ZenithFramework{
 	ModuleFramework *moduleFrame;
 	AssetFramework *assetFrame;
-	AbstractionFramework * absFrame;
+	AbstractionFramework *absFrame;
 	RenderingFramework *renderFrame;
 
 	void initEnv(const char* rootDir);
 
 public:
-	StellaFramework(const char* rootDir);
-	~StellaFramework();
+	ZenithFramework(const char* rootDir);
+	~ZenithFramework();
 };
 
-StellaFramework::StellaFramework(const char* rootDir){
+ZenithFramework::ZenithFramework(const char* rootDir){
 	initEnv(rootDir);
 	moduleFrame = new ModuleFramework();
 	assetFrame = new AssetFramework();
@@ -36,15 +36,15 @@ StellaFramework::StellaFramework(const char* rootDir){
 	renderFrame = new RenderingFramework();
 }
 
-StellaFramework::~StellaFramework(){
+ZenithFramework::~ZenithFramework(){
 	delete renderFrame;
 	delete absFrame;
 	delete assetFrame;
 	delete moduleFrame;
 }
 
-void StellaFramework::initEnv(const char* rootDir){
-    std::string version = "Stella Engine: v. ";
+void ZenithFramework::initEnv(const char* rootDir){
+    std::string version = "Zenith Engine: v. ";
     version.append(Engine_Version);
     std::cout << version << std::endl;
     
@@ -63,10 +63,10 @@ void StellaFramework::initEnv(const char* rootDir){
 }
 
 //Library Calls
-namespace Stella{
-    StellaFramework* init(const char* rootDir){return new StellaFramework(rootDir);}
+namespace Zenith {
+    ZenithFramework* init(const char* rootDir){return new ZenithFramework(rootDir);}
 
-    void free(StellaFramework *thisFrame){
+    void free(ZenithFramework *thisFrame){
         delete thisFrame;
         return;
     }

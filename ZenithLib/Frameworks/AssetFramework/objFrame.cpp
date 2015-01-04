@@ -1,5 +1,9 @@
 #include "objFrame.h"
 
+//Static Member Declarations
+
+int AssetLibrary::nextLibID = 0;
+
 //Asset Framework Definitions
 
 void AssetFramework::loadAssetLibrary(const char* LibName){

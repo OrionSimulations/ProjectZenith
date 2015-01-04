@@ -54,11 +54,8 @@ class ModuleFramework{
 public:
 	ModuleFramework(){
 		std::cout << "Creating Module Framework..." << std::endl;
-		const char* reqFunc[] = {(char*)"initialize",(char*)"update"};
-		std::list<const char*> requiredFuncs;//(reqFunc,reqFunc+1);
-		requiredFuncs.push_back(*reqFunc);
-		requiredFuncs.push_back(reqFunc[1]);
-		ContentLoader<Module> modLoader(buildEnv::ModDir.c_str(),requiredFuncs);
+		const char* reqFunc[] = {(char*)"initialize",(char*)"update",NULL};
+		ContentLoader<Module> modLoader(buildEnv::ModDir.c_str(),reqFunc,true);
 		ModList = modLoader.exportContentList();
 //OpenMP: Run all module update functions
 		if(ModList.size() > 0){

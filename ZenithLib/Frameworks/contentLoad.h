@@ -6,7 +6,7 @@
 #include <dirent.h>
 #include <cstring>
 
-#include "sysenv.h"
+#include "../sysenv.h"
 
 #if WIN_BUILD
 #include <windows.h>
@@ -21,11 +21,11 @@ class ContentLoader{
 	//Library Properties
 	const char* contentRoot;
 	std::list<T_Container*> contentInstances;
-	std::list<const char*> requiredFuncs;
+	const char** requiredFuncs;
 
 	//Content Loading Methods
 	void loadContent(const char* contentDir, const char* contentName){
-//Fucking NT Kernel...
+//Play well with the NT Kernel...
 #if WIN_BUILD
 		HMODULE con_lib = LoadLibrary(contentDir);
 		if(!con_lib){
@@ -49,40 +49,50 @@ class ContentLoader{
 		typedef void (*func_t)(void);
 		std::list<func_t> funcList;
 		char* functionLog = new char[256];
-		for(auto it = requiredFuncs.begin(); it != requiredFuncs.end(); ++it){
-			std::cout << Section::stringSec(2,Section::Item,std::string(strcat(strcpy(functionLog,*it),": ")));
-			funcList.push_front((func_t)dlsym(con_lib,*it));
+		short i = 0;
+		while(requiredFuncs[i] != NULL){
+			std::cout << Section::stringSec(2,Section::Item,std::string(strcat(strcpy(functionLog,requiredFuncs[i]),": ")));
+			funcList.push_back((func_t)dlsym(con_lib,requiredFuncs[i]));
 			if((errorLog = dlerror()) != NULL) std::cout << errorLog << std::endl;
 			else std::cout << "Verified." << std::endl;
 			errorLog = NULL;
+			i++;
 		}
 		delete functionLog;
 		if(funcList.size() > 0){
-			std::cout << Section::stringSec(2,Section::Item,"Loading Module into catalog...") << std::endl;
+			std::cout << Section::stringSec(2,Section::Item,"Loading content into catalog...") << std::endl;
 			std::cout << Section::stringSec(2,Section::Decrease) << std::endl;
 			contentInstances.push_front(new T_Container(contentName,con_lib,funcList));
 			return;
 		}
 #endif
-		std::cout << "A required symbol was not located. Module will not be added to catalog." << std::endl;
+		std::cout << "A required symbol was not located. Content will not be added to catalog." << std::endl;
 	}
 	void scanDir(){
-		DIR *progDir = opendir(contentRoot);																	//Open Directory
-		struct dirent *dirRoot;																					//Allocate Directory Struct
+		std::cout << "Scanning Directory for Content..." << std::endl;
+		DIR *progDir = opendir(contentRoot);
+		struct dirent *dirRoot;
 		if(progDir){
-			dirRoot = readdir(progDir);																			//Skip Parent Directory
-			dirRoot = readdir(progDir);																			//Skip Current Directory
 			char* content = NULL;
-			while(dirRoot = readdir(progDir)){																	//Read Next Directory
+			int contentCount = 0;
+			//Read Next Directory
+			while(dirRoot = readdir(progDir)){
 				if(dirRoot->d_type & DT_DIR){
 					content = dirRoot->d_name;
-					checkDirCfg(content);
+					//Check if current content is either parent or self
+					//strcmp returns 0 when identical
+					if(strcmp(content,"..") && strcmp(content,".")){
+						checkDirCfg(content);
+						++contentCount;
+					}
 				}
 			}
 			closedir(progDir);
+			std::cout << contentCount << " Modules loaded." << std::endl;
 		}
 	}
-	void checkDirCfg(const char* contentName){ 
+	void checkDirCfg(const char* contentName){
+		std::cout << "Checking Directory Config..." << std::endl;
 		for(auto it = contentInstances.begin(); it != contentInstances.end(); it++){
 			if((**it).name == contentName){
 				std::cout << "Content already loaded." << std::endl;
@@ -94,8 +104,7 @@ class ContentLoader{
 		char* content = new char[256];
 		content = strcat(strcpy(content,contentRoot),contentName);
 		char* file;																								//Allocate library path
-		char* fileEXT;																			//Allocate library extension
-		char* tmp;
+		char* fileEXT;																							//Allocate library extension
 		contentDir = opendir(content);																			//Open Content Directory
 		while(drnt = readdir(contentDir)){
 			file = drnt->d_name;
@@ -115,9 +124,9 @@ class ContentLoader{
 	}
 
 public:
-	ContentLoader(const char* sourceDir, std::list<const char*> &contentRequirements) : contentRoot(sourceDir), requiredFuncs(contentRequirements){
+	ContentLoader(const char* sourceDir, const char** contentRequirements, bool firstScan=false) : contentRoot(sourceDir), requiredFuncs(contentRequirements){
 		std::cout << "Creating Content Loader" << std::endl;
-		scanDir();
+		if(firstScan) scanDir();
 	}
 	~ContentLoader(){
 		std::cout << "Destroying Content Loader..." << std::endl;

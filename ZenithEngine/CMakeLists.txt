@@ -10,7 +10,7 @@ set(PROJECT_BINARY_DIR ${PROJECT_SOURCE_DIR}/build)
 find_program(CMAKE_CXX_COMPILER g++)
 find_program(CMAKE_C_COMPILER gcc)
 
-project(Stella-Launcher)
+project(Zenith-Engine)
 
 #Include OpenGL Resources
 find_package(OpenGL REQUIRED)
@@ -37,9 +37,9 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 endif(UseQT)
 
-#Include Stella Library
-find_package(Stella REQUIRED)
-set(StellaLib ${STELLA_LIBRARIES})
+#Include Zenith Library
+find_package(Zenith REQUIRED)
+set(ZenithLib ${ZENITH_LIBRARIES})
 
 #Add Debugging information (DevReleases)
 if(DevRelease)
@@ -49,17 +49,17 @@ set(CMAKE_BUILD_TYPE "Release")
 endif(DevRelease)
 
 #Link Launcher Libraries
-add_executable(Stella-Launcher runLauncher.cpp)
+add_executable(Zenith-Engine runLauncher.cpp)
 if(UseQT)
-qt5_use_modules(Stella-Launcher ${QtComp})
+qt5_use_modules(Zenith-Engine ${QtComp})
 else(UseQT)
-target_link_libraries(Stella-Launcher ${GLLibs} ${StellaLib} ${CMAKE_DL_LIBS})
+target_link_libraries(Zenith-Engine ${GLLibs} ${ZenithLib} ${CMAKE_DL_LIBS})
 endif(UseQT)
 
 #Install Executable
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 set(CMAKE_INSTALL_PREFIX ~/.zenith CACHE PATH "Standard Zenith Installation Directory" FORCE)
 endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-install(TARGETS Stella-Launcher RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(TARGETS Zenith-Engine RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory \${CMAKE_INSTALL_PREFIX}/modules)")
 install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory \${CMAKE_INSTALL_PREFIX}/assets)")

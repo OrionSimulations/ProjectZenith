@@ -1,5 +1,5 @@
 #include "launchbase.h"
-#include <Stella/stella.h>
+#include <Zenith/zenith.h>
 #include <iostream>
 
 /*//Qt module launcher. Retained as a secondary option.
@@ -12,10 +12,14 @@ int main(int argc, char **argv)
 }
 //*/
 
+using namespace Zenith;
+
 int main(int argc, char **argv)
 {
-	auto Framework = Stella::init(argv[0]);
-	Stella::free(Framework);
+	//auto Framework = Zenith::init(argv[0]);
+	auto Framework = init(argv[0]);
+	//Zenith::free(Framework);
+	free(Framework);
 	getchar();
     return 0;
 }

@@ -2,6 +2,7 @@
 #define SYSENV
 
 #include <string>
+#include <cstring>
 
 struct buildEnv{
 	static std::string BuildDir;
@@ -29,6 +30,34 @@ struct Section{
 			return returnVal;
 		}
 	}
+};
+
+class AutoSection{
+	static const short maxLevel = 5;
+	short level;
+	
+	public:
+	AutoSection(){level = 0;}
+	~AutoSection(){}
+
+	AutoSection& operator++(){
+		this->level++;
+		return *this;
+	}
+	AutoSection operator++(int){
+		AutoSection newSec(*this);
+		++(*this);
+		return newSec;
+	}
+
+	char* printSection(){
+		char* tmp = (char*)malloc(2*level+3);
+		memset(tmp,'=',sizeof(tmp)/sizeof(char));
+		*tmp = '|';
+		tmp[2*level+2] = '>';
+		return tmp;
+	}
+
 };
 
 #endif
